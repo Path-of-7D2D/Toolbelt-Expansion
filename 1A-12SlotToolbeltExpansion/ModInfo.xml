@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<Name value="ToolbeltExpansion" />
+	<DisplayName value="Toolbelt Expansion" />
+	<Description value="Expands the player toolbelt to 12 slots." />
+	<Author value="Path-of-7D2D" />
+	<Version value="1.0.0" />
+	<Website value="https://github.com/Path-of-7D2D/Toolbelt-Expansion" />
+	<!-- Uses Harmony, so it cannot load with EasyAntiCheat enabled. SkipWithAntiCheat
+	     lets the game cleanly skip the mod (instead of erroring) when EAC is on. -->
+	<SkipWithAntiCheat value="true" />
+</xml>

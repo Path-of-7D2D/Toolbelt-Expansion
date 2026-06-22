@@ -1,0 +1,87 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>ToolbeltExpansion</AssemblyName>
+    <RootNamespace>ToolbeltExpansion</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Deterministic>true</Deterministic>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+
+    <!-- 7 Days to Die install location. Override if yours differs, e.g.:
+           dotnet build -p:Game7D2D="D:\SteamLibrary\steamapps\common\7 Days To Die"
+         or set a GAME_7D2D environment variable before building. -->
+    <Game7D2D Condition="'$(GAME_7D2D)' != ''">$(GAME_7D2D)</Game7D2D>
+    <Game7D2D Condition="'$(Game7D2D)' == ''">C:\Program Files (x86)\Steam\steamapps\common\7 Days To Die</Game7D2D>
+    <Managed7D2D>$(Game7D2D)\7DaysToDie_Data\Managed</Managed7D2D>
+    <Harmony7D2D>$(Game7D2D)\Mods\0_TFP_Harmony</Harmony7D2D>
+
+    <!-- The ready-to-install, load-order-named mod folder the build deploys into.
+         Holds ModInfo.xml + Config (tracked) and the compiled DLL (build output). -->
+    <ModDeployDir>$(MSBuildProjectDirectory)\..\..\1A-12SlotToolbeltExpansion</ModDeployDir>
+  </PropertyGroup>
+
+  <!-- Lets the dotnet SDK build net48 without a full .NET Framework targeting pack
+       installed. Restored from NuGet on first build (needs internet once). -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Game assemblies. Private=false: reference only, never copy them into our output. -->
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(Managed7D2D)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(Managed7D2D)\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(Harmony7D2D)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="LogLibrary">
+      <HintPath>$(Managed7D2D)\LogLibrary.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(Managed7D2D)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(Managed7D2D)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Drop the built DLL into the deployable mod folder (1A-12SlotToolbeltExpansion),
+       next to its ModInfo.xml and Config, completing a ready-to-install modlet. -->
+  <Target Name="DeployToModFolder" AfterTargets="Build">
+    <MakeDir Directories="$(ModDeployDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModDeployDir)" SkipUnchangedFiles="false" />
+    <Message Importance="high" Text="Deployed $(TargetFileName) -&gt; $(ModDeployDir)" />
+  </Target>
+
+  <!-- Also refresh the live game install (DLL + manifest + Config) when the game is present,
+       so a build can never leave the installed mod with a stale or missing DLL. The whole
+       point: the DLL is git-ignored, so the installed copy must come from a build, not a file
+       copy of tracked files. Disable with -p:InstallToGame=false (e.g. on a build server). -->
+  <Target Name="InstallToGameMods" AfterTargets="Build"
+          Condition="'$(InstallToGame)' != 'false' and Exists('$(Game7D2D)\Mods')">
+    <PropertyGroup>
+      <GameModDir>$(Game7D2D)\Mods\1A-12SlotToolbeltExpansion</GameModDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(GameModDir)\Config\XUi_InGame" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameModDir)" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="$(ModDeployDir)\ModInfo.xml" DestinationFolder="$(GameModDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(ModDeployDir)\Config\XUi_InGame\windows.xml" DestinationFolder="$(GameModDir)\Config\XUi_InGame" SkipUnchangedFiles="true" />
+    <Message Importance="high" Text="Installed to game: $(GameModDir)" />
+  </Target>
+
+</Project>

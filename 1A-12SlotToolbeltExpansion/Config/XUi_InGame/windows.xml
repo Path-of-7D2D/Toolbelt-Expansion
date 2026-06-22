@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Toolbelt Expansion - XUi layout patch (V3.0, XUi_InGame).
+
+  This file ONLY changes how the toolbelt is drawn. The functional slot count is
+  raised from 10 to 12 by the Harmony patch in ToolbeltExpansion.dll (vanilla's
+  Inventory.PUBLIC_SLOTS is hardcoded and has no XML lever).
+
+  Vanilla 3.0 windowToolbelt is a single row of 10 cells (75px each) at width 753,
+  with a hidden second row used only by the prefab editor. We grow the first row to
+  12 cells and widen / re-center the window to match.
+-->
+<configs>
+
+	<!-- Toolbelt grid: 10 -> 12 columns, single row. -->
+	<set xpath="/windows/window[@name='windowToolbelt']/rect/rect[@controller='Toolbelt']/grid[@name='inventory']/@cols">12</set>
+
+	<!-- Also widen the hidden second-row grid to 12. XUiC_Toolbelt.HasSecondRow is
+	     `PUBLIC_SLOTS > (total cells across both grids) / 2`. With inventory=12 and a
+	     vanilla inventory2=10 that's 12 > 22/2 (=11) = true, so an empty second row
+	     renders. Matching inventory2 to 12 makes it 12 > 24/2 (=12) = false (single row
+	     in play), while the prefab editor's 20 slots still trigger the second row. -->
+	<set xpath="/windows/window[@name='windowToolbelt']/rect/rect[@controller='Toolbelt']/grid[@name='inventory2']/@cols">12</set>
+
+	<!-- Widen + re-center the window. 12 * 75px + 3px pad = 903; centered x = -903/2. -->
+	<set xpath="/windows/window[@name='windowToolbelt']/@width">903</set>
+	<set xpath="/windows/window[@name='windowToolbelt']/@pos">-451, 84</set>
+
+	<!-- Stretch the XP bar fill sprite to the new width (vanilla 750 -> 900). -->
+	<set xpath="/windows/window[@name='windowToolbelt']/rect/sprite[@fill='{xp}']/@width">900</set>
+
+	<!-- The creative-mode "clear toolbelt" trash button hugs the right edge; nudge it past slot 12. -->
+	<set xpath="/windows/window[@name='windowToolbelt']/rect/rect[@controller='Toolbelt']/button[@name='btnClearInventory1']/@pos">910, -32</set>
+
+</configs>

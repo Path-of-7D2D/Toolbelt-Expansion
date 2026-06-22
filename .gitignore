@@ -1,0 +1,11 @@
+# Build output
+**/bin/
+**/obj/
+*.user
+*.suo
+.vs/
+.idea/
+
+# Built mod assembly (produced by `dotnet build`, deployed into the mod folder)
+/1A-12SlotToolbeltExpansion/ToolbeltExpansion.dll
+/1A-12SlotToolbeltExpansion/ToolbeltExpansion.pdb

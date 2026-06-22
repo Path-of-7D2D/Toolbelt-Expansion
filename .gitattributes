@@ -1,0 +1,11 @@
+# Normalize line endings; let Git decide per-file.
+* text=auto
+
+*.cs     text diff=csharp
+*.xml    text
+*.csproj text
+*.md     text
+
+# Binary assets
+*.dll binary
+*.pdb binary
