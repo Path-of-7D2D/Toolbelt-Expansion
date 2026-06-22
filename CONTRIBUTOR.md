@@ -99,7 +99,8 @@ The workflow:
 - Accepts a manual `version_tag`, such as `0.1.0`.
 - Zips `1A-12SlotToolbeltExpansion`.
 - Creates or updates the GitHub Release for that tag.
-- Generates release notes from commits since the latest previous release.
+- Generates release notes through `Path-of-7D2D/Changelog-Generator`.
+- Includes commits since the latest previous release.
 - Groups changelog entries by conventional commit type.
 
 Use conventional commit subjects for useful release notes:
