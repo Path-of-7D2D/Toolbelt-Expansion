@@ -50,6 +50,10 @@
       <HintPath>$(Managed7D2D)\LogLibrary.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="InControl">
+      <HintPath>$(Managed7D2D)\InControl.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(Managed7D2D)\UnityEngine.dll</HintPath>
       <Private>false</Private>
@@ -77,10 +81,15 @@
     <PropertyGroup>
       <GameModDir>$(Game7D2D)\Mods\1A-12SlotToolbeltExpansion</GameModDir>
     </PropertyGroup>
-    <MakeDir Directories="$(GameModDir)\Config\XUi_InGame" />
+    <ItemGroup>
+      <_ModConfigFiles Include="$(ModDeployDir)\Config\**\*" />
+    </ItemGroup>
+    <MakeDir Directories="$(GameModDir)" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameModDir)" SkipUnchangedFiles="false" />
     <Copy SourceFiles="$(ModDeployDir)\ModInfo.xml" DestinationFolder="$(GameModDir)" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(ModDeployDir)\Config\XUi_InGame\windows.xml" DestinationFolder="$(GameModDir)\Config\XUi_InGame" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_ModConfigFiles)"
+          DestinationFiles="@(_ModConfigFiles->'$(GameModDir)\Config\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
     <Message Importance="high" Text="Installed to game: $(GameModDir)" />
   </Target>
 

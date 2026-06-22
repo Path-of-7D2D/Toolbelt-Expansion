@@ -1,0 +1,5 @@
+Key,File,Type,UsedInMainMenu,NoTranslate,KeepLoaded,english
+inpActInventorySlot11Name,UI,Controls Dialog,x,,,Slot 11
+inpActInventorySlot12Name,UI,Controls Dialog,x,,,Slot 12
+inpActInventorySlot11Desc,UI,Controls Dialog,x,,,Select toolbelt slot 11
+inpActInventorySlot12Desc,UI,Controls Dialog,x,,,Select toolbelt slot 12
