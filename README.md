@@ -93,3 +93,7 @@ other UI mods you are using.
 
 Source, build, release, and implementation details live in
 [CONTRIBUTOR.md](CONTRIBUTOR.md).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
