@@ -1,104 +1,95 @@
 # Toolbelt Expansion
 
-Expands the 7 Days to Die player toolbelt from **10** slots to **12**.
+Toolbelt Expansion gives the 7 Days to Die player toolbelt **12 usable slots**
+instead of the vanilla 10.
 
-Built for the **V3.0 "Dead Hot Summer"** experimental branch.
+It includes the UI changes and the Harmony patch needed to make slots 11 and 12
+actually hold items.
 
----
+Built for **7 Days to Die V3.0 "Dead Hot Summer"**.
 
-## Why this needs a DLL (and isn't XML-only)
+## Features
 
-On V3.0 the toolbelt's *functional* size is `Inventory.PUBLIC_SLOTS`, a hardcoded
-property in `Assembly-CSharp.dll`:
+- Expands the normal player toolbelt from 10 slots to 12.
+- Keeps the prefab editor's larger toolbelt behavior intact.
+- Adds rebindable controls for slot 11 and slot 12.
+- Keeps the belt in one clean row of 12 slots.
+- Skips loading when EasyAntiCheat is enabled, instead of crashing the game.
 
-| Context        | Vanilla value |
-| -------------- | ------------- |
-| Normal play    | 10 (`PUBLIC_SLOTS_PLAYMODE`) |
-| Prefab editor  | 20 (`PUBLIC_SLOTS_PREFABEDITOR`) |
+## Download
 
-There is **no XML, cvar, or GamePref** that changes it. Editing only the XUi grid
-would draw extra cells that can't actually hold items. So this mod is two parts:
+Download the latest `ToolbeltExpansion-*.zip` from the
+[GitHub Releases](https://github.com/Path-of-7D2D/Toolbelt-Expansion/releases)
+page.
 
-1. **A Harmony patch** (`ToolbeltExpansion.dll`) raises the play-mode count to 12.
-   The prefab editor's 20-slot belt is left alone.
-2. **An XUi patch** (`Config/XUi_InGame/windows.xml`) widens the on-screen belt to a
-   single row of 12 cells.
+Do not install the repository source zip unless you are building the mod
+yourself. Use the release zip so the required DLL is included.
 
-## Contents
+## Installation
 
-```
-1A-12SlotToolbeltExpansion/         # the deployable mod - copy this folder into Mods/
-  ModInfo.xml                       #   mod manifest (V3.0 format)
-  Config/XUi_InGame/windows.xml     #   toolbelt layout: single row of 12
-  ToolbeltExpansion.dll             #   built output, deployed here (git-ignored)
-src/ToolbeltExpansion/              # C# Harmony project (source)
-  ToolbeltExpansionModApi.cs        #   IModApi entry point -> Harmony bootstrap
-  ToolbeltSlotPatches.cs            #   the PUBLIC_SLOTS patches
-  ToolbeltExpansion.csproj
+1. Turn off EasyAntiCheat before launching the game.
+2. Extract the release zip.
+3. Copy the `1A-12SlotToolbeltExpansion` folder into your `Mods` folder:
+
+```text
+7 Days To Die/Mods/1A-12SlotToolbeltExpansion/
 ```
 
-The `1A-` prefix sets the load order (7DTD loads mod folders alphabetically).
+The folder is installed correctly when this file exists:
 
-## Building
-
-Requires the .NET SDK and a local 7 Days to Die V3.0 install (for the reference
-assemblies). Harmony is provided by the game's `Mods/0_TFP_Harmony/0Harmony.dll`.
-
-```sh
-dotnet build src/ToolbeltExpansion/ToolbeltExpansion.csproj -c Release
+```text
+7 Days To Die/Mods/1A-12SlotToolbeltExpansion/ModInfo.xml
 ```
 
-The build copies `ToolbeltExpansion.dll` into `1A-12SlotToolbeltExpansion/`, completing
-that folder as a ready-to-install modlet. If the game is installed, it **also refreshes the
-live install** at `7 Days To Die/Mods/1A-12SlotToolbeltExpansion/` (disable with
-`-p:InstallToGame=false`).
+## Controls
 
-> **Important:** the DLL is git-ignored (it's a build artifact). A plain file/Git copy of
-> this folder will **not** include it, and the mod will then load its XML (you'll see 12
-> cells) but silently drop items in slots 11-12 because the Harmony patch isn't running.
-> Always `dotnet build` to produce/refresh the DLL.
+Vanilla number keys still select slots 1 through 10.
 
-If your game is not at the default Steam path, override it:
+This mod adds:
 
-```sh
-dotnet build src/ToolbeltExpansion/ToolbeltExpansion.csproj \
-  -p:Game7D2D="D:\SteamLibrary\steamapps\common\7 Days To Die"
-```
+| Slot | Default key |
+| ---- | ----------- |
+| 11   | `-`         |
+| 12   | `=`         |
 
-## Installing
+The new controls appear in the game's Controls menu under the **Toolbelt**
+group as `Slot 11` and `Slot 12`, so you can rebind them.
 
-Copy the `1A-12SlotToolbeltExpansion` folder into:
+The mouse wheel cycles through all 12 slots. Vanilla's hidden `Shift+1` and
+`Shift+2` behavior can also reach slots 11 and 12 once the belt is expanded.
 
-```
-7 Days To Die/Mods/
-```
+## Multiplayer
 
-so that `Mods/1A-12SlotToolbeltExpansion/ModInfo.xml` exists.
+This mod changes the player's inventory slot count. For multiplayer, install it
+on the **server and every client**.
 
-- **EasyAntiCheat must be OFF** (this mod uses Harmony). `ModInfo.xml` sets
-  `SkipWithAntiCheat`, so with EAC on the game simply skips the mod instead of erroring.
-- **Multiplayer:** the slot count is part of the networked inventory, so the mod must be
-  installed on the **server and every client**. Mismatched installs will desync the belt.
+Mismatched installs can cause inventory desyncs or missing items in the extra
+slots.
 
-## Configuring the slot count
+## EasyAntiCheat
 
-Change `ExpandedSlots` in
-[`ToolbeltSlotPatches.cs`](src/ToolbeltExpansion/ToolbeltSlotPatches.cs) and, to keep the
-HUD in sync, the `cols` / `width` / `pos` values in
-[`windows.xml`](1A-12SlotToolbeltExpansion/Config/XUi_InGame/windows.xml). Then rebuild.
+This mod uses Harmony, so EasyAntiCheat must be off.
 
-## First-run check (the one thing to verify in-game)
-
-The single-row-of-12 layout assumes the toolbelt window only shows its built-in second
-row inside the prefab editor. If, on your first test, the belt instead appears as **two
-rows (10 + 2)** or shows a phantom empty second row, enable the commented-out
-`HasSecondRow_Patch` at the bottom of `ToolbeltSlotPatches.cs` and rebuild.
-
-**Known limitation:** the default number-key bindings (`1`–`0`) only reach the first 10
-slots. Slots 11 and 12 are reachable with the mouse wheel; binding extra hotkeys is out
-of scope for this version.
+The mod is marked with `SkipWithAntiCheat`, which means the game should skip it
+cleanly when EAC is enabled.
 
 ## Compatibility
 
-Conflicts with any other mod that patches `Inventory.PUBLIC_SLOTS` or replaces the
-`windowToolbelt` XUi window.
+This mod can conflict with other mods that:
+
+- Patch `Inventory.PUBLIC_SLOTS`.
+- Replace or heavily modify the `windowToolbelt` XUi window.
+- Change toolbelt slot selection controls.
+
+## Troubleshooting
+
+If you see 12 slots but slots 11 and 12 do not keep items, the DLL is missing or
+did not load. Reinstall from the release zip and make sure EasyAntiCheat is off.
+
+If the belt appears as two rows, report the issue with your game version and any
+other UI mods you are using.
+
+## Contributing
+
+Source, build, release, and implementation details live in
+[CONTRIBUTOR.md](CONTRIBUTOR.md).
