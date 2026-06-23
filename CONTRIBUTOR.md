@@ -121,5 +121,7 @@ Before publishing a release:
 - Confirm the toolbelt shows one row with 12 slots.
 - Confirm slots 11 and 12 keep items after closing and reopening inventory.
 - Confirm `-` selects slot 11 and `=` selects slot 12.
+- Hold `Shift` to sprint and confirm number keys still select slots 1 through
+  10 instead of offsetting into slots 11+.
 - Confirm the controls can be rebound in the Controls menu.
 - If testing multiplayer changes, test with both server and client installed.

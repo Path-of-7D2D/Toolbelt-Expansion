@@ -55,8 +55,8 @@ This mod adds:
 The new controls appear in the game's Controls menu under the **Toolbelt**
 group as `Slot 11` and `Slot 12`, so you can rebind them.
 
-The mouse wheel cycles through all 12 slots. Vanilla's hidden `Shift+1` and
-`Shift+2` behavior can also reach slots 11 and 12 once the belt is expanded.
+The mouse wheel cycles through all 12 slots. Holding `Shift` to sprint does not
+change number-key slot selection; `Shift+1` still selects slot 1, not slot 11.
 
 ## Multiplayer
 

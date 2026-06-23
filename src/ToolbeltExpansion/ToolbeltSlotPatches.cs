@@ -51,6 +51,18 @@ namespace ToolbeltExpansion
             }
         }
 
+        [HarmonyPatch(typeof(Inventory), "SHIFT_KEY_SLOT_OFFSET", MethodType.Getter)]
+        public static class ShiftKeySlotOffset_Patch
+        {
+            public static void Postfix(Inventory __instance, ref int __result)
+            {
+                if (__result == VanillaPlaySlots && __instance.PUBLIC_SLOTS == ExpandedSlots)
+                {
+                    __result = ExpandedSlots;
+                }
+            }
+        }
+
         // --- Layer 2: guarantee the backing arrays are actually large enough ----------------
 
         [HarmonyPatch(typeof(Inventory), MethodType.Constructor,

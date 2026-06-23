@@ -40,7 +40,7 @@ namespace ToolbeltExpansion
             if (CreatePlayerActionMethod == null)
             {
                 Log.Warning("[ToolbeltExpansion] PlayerActionSet.CreatePlayerAction not found; slot 11/12 hotkeys " +
-                            "not added (Shift+1 / Shift+2 still reach those slots).");
+                            "not added.");
                 return;
             }
 
